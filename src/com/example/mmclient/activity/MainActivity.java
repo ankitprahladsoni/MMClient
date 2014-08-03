@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.View;
 
 import com.example.mmclient.R;
 
@@ -19,11 +20,6 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
-		// Redirecting to Submit Amount Activity screen.
-		Intent intent = getIntent();
-		intent.setClass(this, SubmitAmountActivity.class);
-		startActivity(intent);
 	}
 
 	@Override
@@ -33,4 +29,25 @@ public class MainActivity extends Activity {
 		return true;
 	}
 
+	/**
+	 * Redirects to enter amount screen.
+	 * 
+	 * @param view
+	 */
+	public void enterAmount(View view) {
+		Intent intent = getIntent();
+		intent.setClass(this, SubmitAmountActivity.class);
+		startActivity(intent);
+	}
+
+	/**
+	 * Redirects to show summary screen.
+	 * 
+	 * @param view
+	 */
+	public void showSummary(View view) {
+		Intent intent = getIntent();
+		intent.setClass(this, SummaryActivity.class);
+		startActivity(intent);
+	}
 }

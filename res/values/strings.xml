@@ -14,6 +14,9 @@
     <string name="anurag">Anurag</string>
     <string name="arpana">Arpana</string>
     <string name="expense">Expense description</string>
+    <string name="slideText">Slide Screen Text</string>
+    <string name="enterAmount">Enter Amount</string>
+    <string name="showSummary">Show Summary</string>
 
     <string-array name="spender_list">
         <item>Spent By</item>
@@ -21,5 +24,7 @@
         <item>Anurag</item>
         <item>Arpana</item>
     </string-array>
+
+    <string name="title_activity_summary">Summary</string>
 
 </resources>

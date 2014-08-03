@@ -6,4 +6,19 @@
     android:orientation="vertical"
     tools:context="com.example.mmclient.activity.MainActivity"
     tools:ignore="MergeRootFrame" >
+
+    <Button
+        android:id="@+id/enterAmountButtonId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/enterAmount"
+        android:onClick="enterAmount" />
+
+    <Button
+        android:id="@+id/showSummaryButtonId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/showSummary"
+        android:onClick="showSummary" />
+
 </LinearLayout>
