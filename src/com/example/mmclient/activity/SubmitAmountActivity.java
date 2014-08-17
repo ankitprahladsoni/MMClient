@@ -120,9 +120,4 @@ public class SubmitAmountActivity extends Activity {
 		arpanaCheckBox.setChecked(false);
 		memberDropDown.setSelection(0);
 	}
-
-	@Override
-	public void onBackPressed() {
-		// DO nothing
-	}
 }

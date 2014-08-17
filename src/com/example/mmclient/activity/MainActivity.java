@@ -35,9 +35,7 @@ public class MainActivity extends Activity {
 	 * @param view
 	 */
 	public void enterAmount(View view) {
-		Intent intent = getIntent();
-		intent.setClass(this, SubmitAmountActivity.class);
-		startActivity(intent);
+		startActivity(new Intent(MainActivity.this, SubmitAmountActivity.class));
 	}
 
 	/**
@@ -46,8 +44,6 @@ public class MainActivity extends Activity {
 	 * @param view
 	 */
 	public void showSummary(View view) {
-		Intent intent = getIntent();
-		intent.setClass(this, SummaryActivity.class);
-		startActivity(intent);
+		startActivity(new Intent(MainActivity.this, SummaryActivity.class));
 	}
 }

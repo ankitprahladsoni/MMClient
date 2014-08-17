@@ -47,16 +47,12 @@ public class SummaryScreenSlideFragment extends Fragment {
 		// First screen is for Individual Summary screen.
 		if (0 == pageNumber) {
 			((TextView) rootView.findViewById(R.id.slideTitleId))
-					.setText("Individual Summary - Balance:" + 120);
-			((TextView) rootView.findViewById(R.id.fragmentSlideScreenTextId))
-					.setText("Individual Summary Text");
+					.setText("Individual Summary");
 		}
 		// Second screen is for Group Summary screen.
 		else if (1 == pageNumber) {
 			((TextView) rootView.findViewById(R.id.slideTitleId))
 					.setText("Group Summary");
-			((TextView) rootView.findViewById(R.id.fragmentSlideScreenTextId))
-					.setText("Group Summary Text");
 		}
 		return rootView;
 	}

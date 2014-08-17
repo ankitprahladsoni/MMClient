@@ -10,8 +10,6 @@ import android.support.v4.view.ViewPager;
 import android.view.MenuItem;
 
 import com.example.mmclient.R;
-import com.example.mmclient.R.id;
-import com.example.mmclient.R.layout;
 import com.example.mmclient.fragment.SummaryScreenSlideFragment;
 
 /**
