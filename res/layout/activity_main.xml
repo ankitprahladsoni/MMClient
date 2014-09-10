@@ -3,23 +3,26 @@
     android:id="@+id/container"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical"
     android:background="@drawable/background"
+    android:orientation="vertical"
     tools:context="com.example.mmclient.activity.MainActivity"
     tools:ignore="MergeRootFrame" >
 
     <Button
         android:id="@+id/enterAmountButtonId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/enterAmount"
-        android:onClick="enterAmount" />
+        style="@style/CodeFont"
+        android:layout_width="fill_parent"
+        android:layout_marginTop="10sp"
+        android:height="100sp"
+        android:onClick="enterAmount"
+        android:text="@string/enterAmount" />
 
     <Button
         android:id="@+id/showSummaryButtonId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/showSummary"
-        android:onClick="showSummary" />
+        style="@style/CodeFont"
+        android:layout_width="fill_parent"
+        android:height="100sp"
+        android:onClick="showSummary"
+        android:text="@string/showSummary" />
 
 </LinearLayout>

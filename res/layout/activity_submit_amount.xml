@@ -3,13 +3,9 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@drawable/background"
+    android:orientation="vertical"
     tools:context=".SubmitAmountActivity" >
-
-    <TextView
-        android:id="@+id/welcomeMessageId"
-        style="@style/CodeFont" />
 
     <TextView
         android:id="@+id/amountAddedMessageId"
@@ -18,40 +14,48 @@
     <EditText
         android:id="@+id/expenseId"
         style="@style/CodeFont"
+        android:layout_width="fill_parent"
         android:hint="@string/expense"
         android:inputType="text" />
 
     <LinearLayout
         android:id="@+id/spenderLayoutId"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
 
         <EditText
             android:id="@+id/amountId"
             style="@style/CodeFont"
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
             android:hint="@string/amount"
             android:inputType="number" />
 
         <Spinner
             android:id="@+id/spendById"
             style="@style/CodeFont"
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
             android:entries="@array/spender_list" />
     </LinearLayout>
 
     <CheckBox
         android:id="@+id/anupamId"
         style="@style/CodeFont"
+        android:layout_marginLeft="10sp"
         android:text="@string/anupam" />
 
     <CheckBox
         android:id="@+id/anuragId"
         style="@style/CodeFont"
+        android:layout_marginLeft="10sp"
         android:text="@string/anurag" />
 
     <CheckBox
         android:id="@+id/arpanaId"
         style="@style/CodeFont"
+        android:layout_marginLeft="10sp"
         android:text="@string/arpana" />
 
     <TextView
@@ -61,6 +65,7 @@
     <Button
         android:id="@+id/submitId"
         style="@style/CodeFont"
+        android:layout_width="fill_parent"
         android:onClick="submitAmount"
         android:text="@string/submit" />
 
