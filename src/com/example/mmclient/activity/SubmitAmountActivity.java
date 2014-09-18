@@ -41,13 +41,12 @@ import java.util.List;
  */
 public class SubmitAmountActivity extends Activity {
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_submit_amount);
-		TextView welcomeTextView = (TextView) findViewById(R.id.welcomeMessageId);
-		welcomeTextView.setText("Welcome !");
-	}
+    BigDecimal anupamAmount = BigDecimal.ZERO;
+    BigDecimal anuragAmount = BigDecimal.ZERO;
+    BigDecimal arpanaAmount = BigDecimal.ZERO;
+    String paidBy;
+    String description;
+    String amount;
 
 
     @Override
