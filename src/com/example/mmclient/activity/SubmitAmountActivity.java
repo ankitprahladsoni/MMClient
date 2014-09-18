@@ -53,8 +53,6 @@ public class SubmitAmountActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_submit_amount);
-        TextView welcomeTextView = (TextView) findViewById(R.id.welcomeMessageId);
-        welcomeTextView.setText("Welcome !");
     }
 
     /**
