@@ -2,24 +2,21 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.mmclient"
     android:versionCode="1"
-    android:versionName="1.0" >
-
-    <uses-sdk
-        android:minSdkVersion="11"
-        android:targetSdkVersion="19" />
+    android:versionName="1.0">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/background"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
-        
+        android:theme="@style/AppTheme">
+
         <activity
             android:name="com.example.mmclient.SplashActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -27,24 +24,26 @@
         </activity>
         <activity
             android:name="com.example.mmclient.activity.MainActivity"
-            android:label="@string/app_name" >
-        </activity>
+            android:label="@string/app_name"></activity>
         <activity
             android:name="com.example.mmclient.activity.GroupListActivity"
-            android:label="@string/app_name" >
-        </activity>
+            android:label="@string/app_name"></activity>
         <activity
             android:name="com.example.mmclient.activity.SubmitAmountActivity"
-            android:label="@string/title_activity_submit_amount" >
-        </activity>
+            android:label="@string/title_activity_submit_amount"></activity>
         <activity
             android:name="com.example.mmclient.activity.GroupMemberActivity"
-            android:label="Single Item Selected" >
-        </activity>
+            android:label="Single Item Selected"></activity>
         <activity
             android:name="com.example.mmclient.activity.SummaryActivity"
-            android:label="@string/title_activity_summary" >
-        </activity>
+            android:label="@string/title_activity_summary"></activity>
+        <activity
+            android:name="com.example.mmclient.activity.LoginActivity"
+            android:label="Authenticate"></activity>
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>
