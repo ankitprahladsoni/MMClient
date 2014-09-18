@@ -1,17 +1,46 @@
-apply plugin: 'android'
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.12.2'
 
-dependencies {
-    compile fileTree(dir: 'libs', include: '*.jar')
-    compile project(':linux:Tools:adt-bundle-linux-x86_64-20140321:sdk:extras:android:support:v7:appcompat')
+    }
 }
+apply plugin: 'com.android.application'
+
+repositories {
+    mavenCentral()
+}
+dependencies {
+    //compile fileTree(dir: 'libs', include: '*.jar')
+    compile 'com.android.support:appcompat-v7:20.0.0'
+    compile 'com.android.support:support-v13:20.0.0'
+    compile 'com.google.android.gms:play-services:5.0.89'
+    //compile 'com.google.gdata.data.spreadsheet:1.47.1'
+    compile files('libs/gdata-client-1.0.jar')
+    compile files('libs/gdata-client-meta-1.0.jar')
+    compile files('libs/gdata-core-1.0.jar')
+    compile files('libs/gdata-spreadsheet-3.0.jar')
+    compile files('libs/gdata-spreadsheet-meta-3.0.jar')
+    compile files('libs/guava-11.0.2.jar')
+    compile files('libs/jsr305.jar')}
+
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion "19.0.3"
+    compileSdkVersion 20
+    buildToolsVersion '20'
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
+    }
+    defaultConfig {
+        applicationId "com.example.application"
+        minSdkVersion 13
+        targetSdkVersion 20
+        versionCode 1
+        versionName "1.0"
     }
 
     sourceSets {
