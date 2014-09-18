@@ -207,7 +207,7 @@ public class SubmitAmountActivity extends Activity {
                 row.getCustomElements().setValueLocal("Anurag", anuragAmount.toString());
                 row.getCustomElements().setValueLocal("Arpana", arpanaAmount.toString());
                 row.getCustomElements().setValueLocal("TotalAmount", amount);
-                row.getCustomElements().setValueLocal("EntryBy", "ankitprahladsoni@gmail.com");
+                row.getCustomElements().setValueLocal("EntryBy", pref.getString("Email", ""));
                 row.getCustomElements().setValueLocal("SpentBy", paidBy);
                 // Send the new row to the API for insertion.
                 row = service.insert(listFeedUrl, row);
