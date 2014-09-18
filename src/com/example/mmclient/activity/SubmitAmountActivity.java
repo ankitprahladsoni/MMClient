@@ -128,70 +128,7 @@ public class SubmitAmountActivity extends Activity {
 
     }
 
-    private void submitDetailsToSpreadSheet(String description, BigDecimal anupamAmount, BigDecimal arpanaAmount, BigDecimal anuragAmount, String amount, String paidBy) {
 
-
-        SharedPreferences pref = getSharedPreferences("AppPref", MODE_PRIVATE);
-        String token = pref.getString("Access Token", null);
-        SpreadsheetService service =
-                new SpreadsheetService("MySpreadsheetIntegration-v1");
-        service.setAuthSubToken(token);
-
-        URL SPREADSHEET_FEED_URL = null;
-        try {
-            SPREADSHEET_FEED_URL = new URL(
-                    "https://spreadsheets.google.com/feeds/spreadsheets/private/full");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        SpreadsheetFeed feed = null;
-        try {
-            feed = service.getFeed(SPREADSHEET_FEED_URL,
-                    SpreadsheetFeed.class);
-
-            List<SpreadsheetEntry> spreadsheets = feed.getEntries();
-
-
-            int count = spreadsheets.size() - 1;
-            SpreadsheetEntry spreadsheet = null;
-            while (count >= 0) {
-                if (spreadsheets.get(count--).getTitle().getPlainText().equals("Step expenses Sheet")) {
-                    spreadsheet = spreadsheets.get(count + 1);
-                    System.out.println("file selected: " + spreadsheet.getTitle().getPlainText());
-                    break;
-                }
-            }
-
-            WorksheetFeed worksheetFeed = service.getFeed(
-                    spreadsheet.getWorksheetFeedUrl(), WorksheetFeed.class);
-            List<WorksheetEntry> worksheets = worksheetFeed.getEntries();
-            WorksheetEntry worksheet = worksheets.get(0);
-
-            // Fetch the list feed of the worksheet.
-            URL listFeedUrl = worksheet.getListFeedUrl();
-            ListFeed listFeed = service.getFeed(listFeedUrl, ListFeed.class);
-
-            //*System.out.println(listFeed.getEntries().size());
-            //  ListEntry row = listFeed.getEntries().get(0);
-            // Set<String> columnHeadings = row.getCustomElements().getTags();
-
-            ListEntry row = new ListEntry();
-            row.getCustomElements().setValueLocal("Timestamp", new Date().toString());
-            row.getCustomElements().setValueLocal("ExpenseReason", description);
-            row.getCustomElements().setValueLocal("Anupam", anupamAmount.toString());
-            row.getCustomElements().setValueLocal("Anurag", anuragAmount.toString());
-            row.getCustomElements().setValueLocal("Arpana", arpanaAmount.toString());
-            row.getCustomElements().setValueLocal("TotalAmount", amount);
-            row.getCustomElements().setValueLocal("EntryBy", "ankitprahladsoni@gmail.com");
-            row.getCustomElements().setValueLocal("SpentBy", paidBy);
-            // Send the new row to the API for insertion.
-            row = service.insert(listFeedUrl, row);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ServiceException e) {
-            e.printStackTrace();
-        }
-    }
 
     /**
      * Reset the UI fields to default.
