@@ -26,5 +26,6 @@
     </string-array>
 
     <string name="title_activity_summary">Summary</string>
+    <string name="g_plus_login">G+ Login</string>
 
 </resources>
