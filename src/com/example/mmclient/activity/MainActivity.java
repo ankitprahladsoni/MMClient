@@ -70,13 +70,13 @@ public class MainActivity extends Activity {
         // Find People
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], R.drawable.ic_drawer));
         // Photos
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], R.drawable.ic_drawer));
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], R.drawable.ic_drawer, true, "22"));
         // Communities, Will add a counter here
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], R.drawable.ic_drawer, true, "22"));
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], R.drawable.ic_drawer));
         // Pages
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], R.drawable.ic_drawer));
         // What's hot, We  will add a counter here
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], R.drawable.ic_drawer, true, "50+"));
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], R.drawable.ic_drawer));
 
 
         // Recycle the typed array
