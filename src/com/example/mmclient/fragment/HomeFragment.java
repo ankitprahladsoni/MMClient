@@ -1,4 +1,4 @@
-package com.example.mmclient;
+package com.example.mmclient.fragment;
 
 /**
  * Created by Ankit on 20-Sep-14.
@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.mmclient.R;
 
 public class HomeFragment extends Fragment {
 
