@@ -1,18 +1,24 @@
 package com.example.mmclient.service;
 
-import java.math.BigDecimal;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
-
-import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 
-public class CallAPI extends AsyncTask<Void, Void, String> {
+import com.example.mmclient.model.AuthPreferences;
+import com.google.gdata.client.spreadsheet.SpreadsheetService;
+import com.google.gdata.data.spreadsheet.ListEntry;
+import com.google.gdata.data.spreadsheet.SpreadsheetEntry;
+import com.google.gdata.data.spreadsheet.SpreadsheetFeed;
+import com.google.gdata.data.spreadsheet.WorksheetEntry;
+import com.google.gdata.data.spreadsheet.WorksheetFeed;
+import com.google.gdata.util.ServiceException;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Date;
+import java.util.List;
+
+public class CallAPI extends AsyncTask<String,String,Void> {
 
 	public final static String apiURL = "https://docs.google.com/forms/d/1ofJB5V1sugFMkdUvaarPo-8uo0j_oBNTZFSWEg_b3QQ/formResponse?";
 
@@ -21,50 +27,73 @@ public class CallAPI extends AsyncTask<Void, Void, String> {
 	private BigDecimal anuragAmount = BigDecimal.ZERO;
 	private BigDecimal arpanaAmount = BigDecimal.ZERO;
 
-	public String name = "Unkown";
-	public String expense = "Unkown";
-	public String spentBy = "Unkown";
+	public String spentBy;
+    public String description;
+    AuthPreferences authPreferences;
 
-	public CallAPI(BigDecimal totalAmount, BigDecimal anupamAmount,
-			BigDecimal anuragAmount, BigDecimal arpanaAmount, String expense,
-			String name, String spentBy) {
-		this.totalAmount = totalAmount;
-		this.anupamAmount = anupamAmount;
-		this.anuragAmount = anuragAmount;
-		this.arpanaAmount = arpanaAmount;
-		this.expense = expense;
-		this.name = name;
-		this.spentBy = spentBy;
-	}
+    public CallAPI(AuthPreferences authPreferences, String description, BigDecimal anupamAmount, BigDecimal arpanaAmount, BigDecimal anuragAmount, BigDecimal amount, String spentBy) {
+    this.description=description;
+        this.anupamAmount=anupamAmount;
+        this.arpanaAmount=arpanaAmount;
+        this.anuragAmount=anuragAmount;
+        this.totalAmount=amount;
+        this.spentBy=spentBy;
+        this.authPreferences = authPreferences;
+    }
 
-	@Override
-	protected String doInBackground(Void... params) {
-		HttpClient httpClient = AndroidHttpClient.newInstance("Money Manager");
-		HttpContext localContext = new BasicHttpContext();
+    @Override
+    protected Void doInBackground(String... arg0) {
 
-		String amountEntry = "entry_1044836361=" + totalAmount.doubleValue();
-		String anupamEntry = "entry.1196913981=" + anupamAmount.doubleValue();
-		String anuragEntry = "entry.342210625=" + anuragAmount.doubleValue();
-		String arpanaEntry = "entry.86740398=" + arpanaAmount.doubleValue();
-		String nameEntry = "entry.895685265=" + name.replaceAll(" ", "%20");
-		String expenseEntry = "entry_230100034="
-				+ expense.replaceAll(" ", "%20");
-		String spentByEntry = "entry.1818080019="
-				+ spentBy.replaceAll(" ", "%20");
+        String token = authPreferences.getToken();
+        SpreadsheetService service =
+                new SpreadsheetService("MySpreadsheetIntegration-v1");
+        service.setAuthSubToken(token);
 
-		String urlWithAmount = apiURL + amountEntry + "&" + anupamEntry + "&"
-				+ anuragEntry + "&" + arpanaEntry + "&" + nameEntry + "&"
-				+ expenseEntry + "&" + spentByEntry;
-		HttpGet httpGet = new HttpGet(urlWithAmount);
-		String text = null;
-		try {
-			HttpResponse response = httpClient.execute(httpGet, localContext);
-			HttpEntity entity = response.getEntity();
-			text = entity.toString();
+        URL SPREADSHEET_FEED_URL = null;
+        try {
+            SPREADSHEET_FEED_URL = new URL(
+                    "https://spreadsheets.google.com/feeds/spreadsheets/private/full");
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        SpreadsheetFeed feed;
+        try {
+            feed = service.getFeed(SPREADSHEET_FEED_URL,
+                    SpreadsheetFeed.class);
 
-		} catch (Exception e) {
-			return e.getLocalizedMessage();
-		}
-		return text;
-	}
+            List<SpreadsheetEntry> spreadsheets = feed.getEntries();
+
+            int count = spreadsheets.size() - 1;
+            SpreadsheetEntry spreadsheet = null;
+            while (count >= 0) {
+                if (spreadsheets.get(count--).getTitle().getPlainText().equals("Step expenses Sheet")) {
+                    spreadsheet = spreadsheets.get(count + 1);
+                    System.out.println("file selected: " + spreadsheet.getTitle().getPlainText());
+                    break;
+                }
+            }
+
+            WorksheetFeed worksheetFeed = service.getFeed(
+                    spreadsheet.getWorksheetFeedUrl(), WorksheetFeed.class);
+            List<WorksheetEntry> worksheets = worksheetFeed.getEntries();
+            WorksheetEntry worksheet = worksheets.get(0);
+
+            // Fetch the list feed of the worksheet.
+            URL listFeedUrl = worksheet.getListFeedUrl();
+
+            ListEntry row = new ListEntry();
+            row.getCustomElements().setValueLocal("Timestamp", new Date().toString());
+            row.getCustomElements().setValueLocal("ExpenseReason", description);
+            row.getCustomElements().setValueLocal("Anupam", anupamAmount.toString());
+            row.getCustomElements().setValueLocal("Anurag", anuragAmount.toString());
+            row.getCustomElements().setValueLocal("Arpana", arpanaAmount.toString());
+            row.getCustomElements().setValueLocal("TotalAmount", totalAmount.toString());
+            row.getCustomElements().setValueLocal("EntryBy", authPreferences.getEmail());
+            row.getCustomElements().setValueLocal("SpentBy", spentBy);
+            service.insert(listFeedUrl, row);
+        } catch (IOException | ServiceException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

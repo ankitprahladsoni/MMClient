@@ -1,7 +1,6 @@
 package com.example.mmclient.activity;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,21 +15,10 @@ import com.example.mmclient.domain.Member;
 import com.example.mmclient.domain.MemberAndAmount;
 import com.example.mmclient.domain.SimpleCalculator;
 import com.example.mmclient.model.AuthPreferences;
-import com.example.mmclient.service.GetGoogleAccount;
-import com.google.gdata.client.spreadsheet.SpreadsheetService;
-import com.google.gdata.data.spreadsheet.ListEntry;
-import com.google.gdata.data.spreadsheet.SpreadsheetEntry;
-import com.google.gdata.data.spreadsheet.SpreadsheetFeed;
-import com.google.gdata.data.spreadsheet.WorksheetEntry;
-import com.google.gdata.data.spreadsheet.WorksheetFeed;
-import com.google.gdata.util.ServiceException;
+import com.example.mmclient.service.CallAPI;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 
@@ -47,7 +35,7 @@ public class SubmitAmountActivity extends NavDrawerActivity {
     String paidBy;
     String description;
     String amount;
-    AuthPreferences authPreferences;
+
 
 
     @Override
@@ -57,7 +45,7 @@ public class SubmitAmountActivity extends NavDrawerActivity {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View contentView = inflater.inflate(R.layout.activity_submit_amount, null, false);
         mDrawerLayout.addView(contentView, 0);
-        authPreferences = new AuthPreferences(this);
+
     }
 
     /**
@@ -114,17 +102,10 @@ public class SubmitAmountActivity extends NavDrawerActivity {
         }
 
         TextView expense = (TextView) findViewById(R.id.expenseId);
-        String name = new GetGoogleAccount(getSystemService(ACCOUNT_SERVICE))
-                .getName();
         Spinner memberDropDown = (Spinner) findViewById(R.id.spendById);
          paidBy = memberDropDown.getSelectedItem().toString();
-        /*new CallAPI(new BigDecimal(amount), anupamAmount, anuragAmount,
-                arpanaAmount, expense.getText().toString(), name,
-                memberDropDown.getSelectedItem().toString()).execute();*/
-        description=expense.getText().toString();
+        new CallAPI(new AuthPreferences(this),expense.getText().toString(), anupamAmount, arpanaAmount, anuragAmount, new BigDecimal(amount), paidBy).execute();
 
-        //submitDetailsToSpreadSheet(expense.getText().toString(), anupamAmount, arpanaAmount, anuragAmount, amount, paidBy);
-        new SpreadSheetProcess().execute();
         resetUIFields(anupamCheckBox, anuragCheckBox, arpanaCheckBox, expense,
                 memberDropDown);
 
@@ -152,64 +133,4 @@ public class SubmitAmountActivity extends NavDrawerActivity {
         memberDropDown.setSelection(0);
     }
 
-    private class SpreadSheetProcess extends AsyncTask<String, String, String> {
-
-        @Override
-        protected String doInBackground(String... arg0) {
-
-           //SharedPreferences pref = getSharedPreferences("AppPref", MODE_PRIVATE);
-            String token = authPreferences.getToken();
-            SpreadsheetService service =
-                    new SpreadsheetService("MySpreadsheetIntegration-v1");
-            service.setAuthSubToken(token);
-
-            URL SPREADSHEET_FEED_URL = null;
-            try {
-                SPREADSHEET_FEED_URL = new URL(
-                        "https://spreadsheets.google.com/feeds/spreadsheets/private/full");
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-            SpreadsheetFeed feed = null;
-            try {
-                feed = service.getFeed(SPREADSHEET_FEED_URL,
-                        SpreadsheetFeed.class);
-
-                List<SpreadsheetEntry> spreadsheets = feed.getEntries();
-
-                int count = spreadsheets.size() - 1;
-                SpreadsheetEntry spreadsheet = null;
-                while (count >= 0) {
-                    if (spreadsheets.get(count--).getTitle().getPlainText().equals("Step expenses Sheet")) {
-                        spreadsheet = spreadsheets.get(count + 1);
-                        System.out.println("file selected: " + spreadsheet.getTitle().getPlainText());
-                        break;
-                    }
-                }
-
-                WorksheetFeed worksheetFeed = service.getFeed(
-                        spreadsheet.getWorksheetFeedUrl(), WorksheetFeed.class);
-                List<WorksheetEntry> worksheets = worksheetFeed.getEntries();
-                WorksheetEntry worksheet = worksheets.get(0);
-
-                // Fetch the list feed of the worksheet.
-                URL listFeedUrl = worksheet.getListFeedUrl();
-
-                ListEntry row = new ListEntry();
-                row.getCustomElements().setValueLocal("Timestamp", new Date().toString());
-                row.getCustomElements().setValueLocal("ExpenseReason", description);
-                row.getCustomElements().setValueLocal("Anupam", anupamAmount.toString());
-                row.getCustomElements().setValueLocal("Anurag", anuragAmount.toString());
-                row.getCustomElements().setValueLocal("Arpana", arpanaAmount.toString());
-                row.getCustomElements().setValueLocal("TotalAmount", amount);
-                row.getCustomElements().setValueLocal("EntryBy", authPreferences.getEmail());
-                row.getCustomElements().setValueLocal("SpentBy", paidBy);
-                // Send the new row to the API for insertion.
-                service.insert(listFeedUrl, row);
-            } catch (IOException | ServiceException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-    }
 }
