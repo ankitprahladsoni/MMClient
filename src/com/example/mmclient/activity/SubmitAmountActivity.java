@@ -1,9 +1,9 @@
 package com.example.mmclient.activity;
 
-import android.app.Activity;
-import android.content.SharedPreferences;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -15,10 +15,10 @@ import com.example.mmclient.adapter.CheckBoxToMemberAdapter;
 import com.example.mmclient.domain.Member;
 import com.example.mmclient.domain.MemberAndAmount;
 import com.example.mmclient.domain.SimpleCalculator;
+import com.example.mmclient.model.AuthPreferences;
 import com.example.mmclient.service.GetGoogleAccount;
 import com.google.gdata.client.spreadsheet.SpreadsheetService;
 import com.google.gdata.data.spreadsheet.ListEntry;
-import com.google.gdata.data.spreadsheet.ListFeed;
 import com.google.gdata.data.spreadsheet.SpreadsheetEntry;
 import com.google.gdata.data.spreadsheet.SpreadsheetFeed;
 import com.google.gdata.data.spreadsheet.WorksheetEntry;
@@ -39,7 +39,7 @@ import java.util.List;
  *
  * @author SWAPNIL
  */
-public class SubmitAmountActivity extends Activity {
+public class SubmitAmountActivity extends NavDrawerActivity {
 
     BigDecimal anupamAmount = BigDecimal.ZERO;
     BigDecimal anuragAmount = BigDecimal.ZERO;
@@ -47,12 +47,17 @@ public class SubmitAmountActivity extends Activity {
     String paidBy;
     String description;
     String amount;
+    AuthPreferences authPreferences;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_submit_amount);
+        LayoutInflater inflater = (LayoutInflater) this
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View contentView = inflater.inflate(R.layout.activity_submit_amount, null, false);
+        mDrawerLayout.addView(contentView, 0);
+        authPreferences = new AuthPreferences(this);
     }
 
     /**
@@ -63,7 +68,7 @@ public class SubmitAmountActivity extends Activity {
      */
     public void submitAmount(View view) {
         EditText amountEditText = (EditText) findViewById(R.id.amountId);
-         amount = amountEditText.getText().toString();
+        amount = amountEditText.getText().toString();
         System.out.println(amount);
         process(amount);
         amountEditText.setText("");
@@ -149,13 +154,11 @@ public class SubmitAmountActivity extends Activity {
 
     private class SpreadSheetProcess extends AsyncTask<String, String, String> {
 
-
-
         @Override
         protected String doInBackground(String... arg0) {
 
-            SharedPreferences pref = getSharedPreferences("AppPref", MODE_PRIVATE);
-            String token = pref.getString("Access Token", null);
+           //SharedPreferences pref = getSharedPreferences("AppPref", MODE_PRIVATE);
+            String token = authPreferences.getToken();
             SpreadsheetService service =
                     new SpreadsheetService("MySpreadsheetIntegration-v1");
             service.setAuthSubToken(token);
@@ -174,7 +177,6 @@ public class SubmitAmountActivity extends Activity {
 
                 List<SpreadsheetEntry> spreadsheets = feed.getEntries();
 
-
                 int count = spreadsheets.size() - 1;
                 SpreadsheetEntry spreadsheet = null;
                 while (count >= 0) {
@@ -192,11 +194,6 @@ public class SubmitAmountActivity extends Activity {
 
                 // Fetch the list feed of the worksheet.
                 URL listFeedUrl = worksheet.getListFeedUrl();
-                ListFeed listFeed = service.getFeed(listFeedUrl, ListFeed.class);
-
-                //*System.out.println(listFeed.getEntries().size());
-                //  ListEntry row = listFeed.getEntries().get(0);
-                // Set<String> columnHeadings = row.getCustomElements().getTags();
 
                 ListEntry row = new ListEntry();
                 row.getCustomElements().setValueLocal("Timestamp", new Date().toString());
@@ -205,13 +202,11 @@ public class SubmitAmountActivity extends Activity {
                 row.getCustomElements().setValueLocal("Anurag", anuragAmount.toString());
                 row.getCustomElements().setValueLocal("Arpana", arpanaAmount.toString());
                 row.getCustomElements().setValueLocal("TotalAmount", amount);
-                row.getCustomElements().setValueLocal("EntryBy", pref.getString("Email", ""));
+                row.getCustomElements().setValueLocal("EntryBy", authPreferences.getEmail());
                 row.getCustomElements().setValueLocal("SpentBy", paidBy);
                 // Send the new row to the API for insertion.
-                row = service.insert(listFeedUrl, row);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ServiceException e) {
+                service.insert(listFeedUrl, row);
+            } catch (IOException | ServiceException e) {
                 e.printStackTrace();
             }
             return null;

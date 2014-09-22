@@ -11,14 +11,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Google OAuth"
+        android:text="@string/g_plus_login"
         android:textSize="35sp" />
 
-    <Button
+    <com.google.android.gms.common.SignInButton
         android:id="@+id/select_button"
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Select Account and Authenticate" />
+        android:paddingTop="20dp"/>
 
 </LinearLayout>

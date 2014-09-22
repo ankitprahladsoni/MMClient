@@ -6,21 +6,21 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.mmclient.R;
+import com.example.mmclient.model.AuthPreferences;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
+import com.google.android.gms.common.SignInButton;
 
 import java.io.IOException;
 
@@ -28,23 +28,25 @@ import java.io.IOException;
  * Created by Ankit on 14-Sep-14.
  */
 public class LoginActivity extends Activity {
-    Button select;
+    SignInButton select;
     String[] avail_accounts;
     ListView list;
     ArrayAdapter<String> adapter;
-    SharedPreferences pref;
+    //SharedPreferences pref;
+    private AuthPreferences authPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.auth_page);
-        select = (Button) findViewById(R.id.select_button);
+        select = (SignInButton) findViewById(R.id.select_button);
 
         avail_accounts = getAccountNames();
         adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, avail_accounts);
-        pref = getSharedPreferences("AppPref", MODE_PRIVATE);
-        String tkn=pref.getString("Access Token", null);
+        authPreferences = new AuthPreferences(this);
+       // pref = getSharedPreferences("AppPref", MODE_PRIVATE);
+        String tkn=authPreferences.getToken();
         if (tkn != null) {
             startMainActivity();
         }
@@ -64,10 +66,7 @@ public class LoginActivity extends Activity {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view,
                                                 int position, long id) {
-                            SharedPreferences.Editor edit = pref.edit();
-                            //Storing Data using SharedPreferences
-                            edit.putString("Email", avail_accounts[position]);
-                            edit.apply();
+                            authPreferences.setEmail(avail_accounts[position]);
                             new Authenticate().execute();
                             accountDialog.cancel();
                         }
@@ -107,7 +106,7 @@ public class LoginActivity extends Activity {
             pDialog.setMessage("Authenticating....");
             pDialog.setIndeterminate(false);
             pDialog.setCancelable(true);
-            mEmail = pref.getString("Email", "");
+            mEmail = authPreferences.getEmail();
             pDialog.show();
         }
 
@@ -115,9 +114,7 @@ public class LoginActivity extends Activity {
         protected void onPostExecute(String token) {
             pDialog.dismiss();
             if (token != null) {
-                SharedPreferences.Editor edit = pref.edit();
-                //Storing Access Token using SharedPreferences
-                edit.putString("Access Token", token).apply();
+                authPreferences.setToken(token);
                 Toast.makeText(getApplicationContext(), "Authenticated", Toast.LENGTH_SHORT).show();
                 startMainActivity();
             }
